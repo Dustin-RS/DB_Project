@@ -1,6 +1,7 @@
 # DB_Project
 Project for DataBase coure at MIPT
-
+## Концептуальная модель
+![Alt text](diagramms/hotel_concept.jpg?raw=true "Title")
 
 ## Физическая модель
 **Order Заказ**
