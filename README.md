@@ -1,6 +1,9 @@
 # DB_Project
 Project for DataBase coure at MIPT
 
+## Презентация
+[Ссылка на презентацию](https://www.canva.com/design/DAE9oi53d4U/M6QDC1Ljc-5FoEFnOpiimA/view?utm_content=DAE9oi53d4U&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Введение
 Семестровый проект по курсу Базы Данных.
 
