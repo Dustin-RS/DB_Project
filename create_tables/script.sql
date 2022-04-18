@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS hotel.Apartment
     ID_apartment BIGINT PRIMARY KEY ,
     apartment_room_amount INT,
     apartment_number INT NOT NULL,
+    apartment_class VARCHAR(50) NOT NULL,
     apartment_is_available BOOLEAN NOT NULL
 );
 
@@ -44,27 +45,27 @@ CREATE TABLE IF NOT EXISTS hotel.Order
     ID_order BIGINT PRIMARY KEY ,
     ID_client INT NOT NULL REFERENCES hotel.Client,
     ID_employee INT NOT NULL REFERENCES hotel.Employee,
-    ID_hotel INT NOT NULL REFERENCES hotel.Hotel,
-    ID_apartment INT NOT NULL REFERENCES hotel.Apartment
+    ID_hotel INT NOT NULL REFERENCES hotel.Hotel
 );
 
 CREATE TABLE IF NOT EXISTS hotel.OrderDetails
 (
     ID_order_details BIGINT PRIMARY KEY ,
-    ID_order INT NOT NULL REFERENCES hotel.Order,
+    ID_order BIGINT NOT NULL REFERENCES hotel.Order,
     ID_apartment INT NOT NULL REFERENCES hotel.Apartment,
     order_details_arrival_time TIMESTAMP NOT NULL,
     order_details_departure_time TIMESTAMP NOT NULL,
+    order_details_total_price DECIMAL NOT NULL,
     order_details_price DECIMAL NOT NULL,
     order_details_surcharge DECIMAL DEFAULT 0,
-    order_details_status BOOLEAN NOT NULL,
-    order_details_people_amount INT NOT NULL
+    order_details_people_amount INT NOT NULL,
+    order_details_status BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS hotel.BookOrder
 (
-    ID_booked_ord BIGINT PRIMARY KEY ,
-    ID_order INT NOT NULL REFERENCES hotel.Order,
+    ID_booked_order BIGINT PRIMARY KEY ,
+    ID_order BIGINT NOT NULL REFERENCES hotel.Order,
     booked_order_is_booked BOOLEAN NOT NULL,
     booked_order_is_canceled BOOLEAN NOT NULL,
     booked_order_status BOOLEAN NOT NULL
@@ -73,10 +74,11 @@ CREATE TABLE IF NOT EXISTS hotel.BookOrder
 CREATE TABLE IF NOT EXISTS hotel.PayForOrder
 (
     ID_pay_for_order BIGINT PRIMARY KEY ,
-    ID_booked_ord INT NOT NULL REFERENCES hotel.Order,
+    ID_booked_order INT NOT NULL REFERENCES hotel.Order,
     pay_for_order_is_paid BOOLEAN NOT NULL,
     pay_for_order_is_received BOOLEAN NOT NULL,
     pay_for_order_paid_sum DECIMAL NOT NULL,
+    pay_for_order_remaining_sum DECIMAL NOT NULL,
     pay_for_order_payment_method VARCHAR(20),
     pay_for_order_payment_count INT NOT NULL
 );
