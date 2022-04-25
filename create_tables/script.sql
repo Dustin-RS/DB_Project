@@ -2,7 +2,7 @@ CREATE SCHEMA hotel;
 
 CREATE TABLE IF NOT EXISTS hotel.Client
 (
-    ID_client BIGINT PRIMARY KEY ,
+    ID_client BIGSERIAL PRIMARY KEY ,
     client_firstname VARCHAR(50) NOT NULL,
     client_lastname VARCHAR(50) NOT NULL,
     client_mobile_phone VARCHAR(12) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS hotel.Client
 
 CREATE TABLE IF NOT EXISTS hotel.Employee
 (
-    ID_employee BIGINT PRIMARY KEY ,
+    ID_employee BIGSERIAL PRIMARY KEY ,
     employee_firstname VARCHAR(50) NOT NULL,
     employee_lastname VARCHAR(50) NOT NULL,
     employee_mobile_phone VARCHAR(12) NOT NULL,
@@ -26,14 +26,14 @@ CREATE TABLE IF NOT EXISTS hotel.Employee
 
 CREATE TABLE IF NOT EXISTS hotel.Hotel
 (
-    ID_hotel BIGINT PRIMARY KEY ,
+    ID_hotel BIGSERIAL PRIMARY KEY ,
     hotel_name VARCHAR(200) NOT NULL,
     hotel_company VARCHAR(200) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS hotel.Apartment
 (
-    ID_apartment BIGINT PRIMARY KEY ,
+    ID_apartment BIGSERIAL PRIMARY KEY ,
     apartment_room_amount INT,
     apartment_number INT NOT NULL,
     apartment_class VARCHAR(50) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS hotel.Apartment
 
 CREATE TABLE IF NOT EXISTS hotel.Order
 (
-    ID_order BIGINT PRIMARY KEY ,
+    ID_order BIGSERIAL PRIMARY KEY ,
     ID_client INT NOT NULL REFERENCES hotel.Client,
     ID_employee INT NOT NULL REFERENCES hotel.Employee,
     ID_hotel INT NOT NULL REFERENCES hotel.Hotel
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS hotel.Order
 
 CREATE TABLE IF NOT EXISTS hotel.OrderDetails
 (
-    ID_order_details BIGINT PRIMARY KEY ,
+    ID_order_details BIGSERIAL PRIMARY KEY ,
     ID_order BIGINT NOT NULL REFERENCES hotel.Order,
     ID_apartment INT NOT NULL REFERENCES hotel.Apartment,
     order_details_arrival_time TIMESTAMP NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS hotel.OrderDetails
 
 CREATE TABLE IF NOT EXISTS hotel.BookOrder
 (
-    ID_booked_order BIGINT PRIMARY KEY ,
+    ID_booked_order BIGSERIAL PRIMARY KEY ,
     ID_order BIGINT NOT NULL REFERENCES hotel.Order,
     booked_order_is_booked BOOLEAN NOT NULL,
     booked_order_is_canceled BOOLEAN NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS hotel.BookOrder
 
 CREATE TABLE IF NOT EXISTS hotel.PayForOrder
 (
-    ID_pay_for_order BIGINT PRIMARY KEY ,
+    ID_pay_for_order BIGSERIAL PRIMARY KEY ,
     ID_booked_order INT NOT NULL REFERENCES hotel.Order,
     pay_for_order_is_paid BOOLEAN NOT NULL,
     pay_for_order_is_received BOOLEAN NOT NULL,
@@ -82,3 +82,4 @@ CREATE TABLE IF NOT EXISTS hotel.PayForOrder
     pay_for_order_payment_method VARCHAR(20),
     pay_for_order_payment_count INT NOT NULL
 );
+
