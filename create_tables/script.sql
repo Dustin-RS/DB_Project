@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS hotel.BookOrder
 CREATE TABLE IF NOT EXISTS hotel.PayForOrder
 (
     ID_pay_for_order BIGSERIAL PRIMARY KEY ,
-    ID_booked_order INT NOT NULL REFERENCES hotel.Order,
+    ID_booked_order INT NOT NULL REFERENCES hotel.BookOrder,
     pay_for_order_is_paid BOOLEAN NOT NULL,
     pay_for_order_is_received BOOLEAN NOT NULL,
     pay_for_order_paid_sum DECIMAL NOT NULL,
