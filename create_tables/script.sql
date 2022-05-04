@@ -24,13 +24,6 @@ CREATE TABLE IF NOT EXISTS hotel.Employee
     employee_birthday DATE NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS hotel.Hotel
-(
-    ID_hotel BIGSERIAL PRIMARY KEY ,
-    hotel_name VARCHAR(200) NOT NULL,
-    hotel_company VARCHAR(200) NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS hotel.Apartment
 (
     ID_apartment BIGSERIAL PRIMARY KEY ,
@@ -44,8 +37,7 @@ CREATE TABLE IF NOT EXISTS hotel.Order
 (
     ID_order BIGSERIAL PRIMARY KEY ,
     ID_client INT NOT NULL REFERENCES hotel.Client,
-    ID_employee INT NOT NULL REFERENCES hotel.Employee,
-    ID_hotel INT NOT NULL REFERENCES hotel.Hotel
+    ID_employee INT NOT NULL REFERENCES hotel.Employee
 );
 
 CREATE TABLE IF NOT EXISTS hotel.OrderDetails
@@ -82,4 +74,3 @@ CREATE TABLE IF NOT EXISTS hotel.PayForOrder
     pay_for_order_payment_method VARCHAR(20),
     pay_for_order_payment_count INT NOT NULL
 );
-
