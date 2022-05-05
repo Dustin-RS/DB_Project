@@ -38,62 +38,69 @@ INSERT INTO hotel.employee (employee_firstname, employee_lastname,
 --####################################################################################################################--
 --## Order                                                                                                   ##--
 --####################################################################################################################--
-INSERT INTO hotel."order"(id_client, id_employee) VALUES
-(1, 5),
-(2, 8),
-(2, 7),
-(3, 4),
-(9, 2),
-(7, 5),
-(6, 5);
+INSERT INTO hotel."order"(id_order, id_client, id_employee) VALUES
+(1, 1, 5),
+(2, 2, 8),
+(3, 3, 6),
+(3, 4, 6),
+(3, 5, 6),
+(4, 9, 2),
+(5, 7, 4),
+(6, 6, 7),
+(7, 8, 3),
+(7, 10, 3);
 
 --####################################################################################################################--
 --## Apartment                                                                                                   ##--
 --####################################################################################################################--
-INSERT INTO hotel.apartment(apartment_room_amount, apartment_number,
-                            apartment_class, apartment_is_available)  VALUES
-(1,101,'Single',true),
-(NULL, 151, 'Double', true),
-(2, 161, 'Double', false),
-(1, 131, 'Queen', true),
-(1, 111, 'King', false),
-(1, 171, 'Twin', true),
-(2, 112, 'King', true),
-(2, 115, 'Studio', true),
-(7, 119, 'President Suite', true),
-(3, 122, 'Connecting rooms', true),
-(1, 155, 'Quad', true),
-(1, 162, 'Triple', false),
-(1, 177, 'Double', true),
-(NULL, 124, 'Murphy Room', true);
+INSERT INTO hotel.apartment(apartment_capacity, apartment_number,
+                            apartment_class, apartment_price_for_night, apartment_is_available)  VALUES
+(1,101,'Single',1000, true),
+(NULL, 151, 'Double',1500, true),
+(2, 161, 'Double',1500, false),
+(1, 131, 'Queen',4000, true),
+(1, 111, 'King',5200, false),
+(1, 171, 'Twin', 9500, true),
+(2, 112, 'King', 9000, true),
+(2, 115, 'Studio',7500, true),
+(7, 119, 'President Suite',14000, true),
+(3, 122, 'Connecting rooms',5500, true),
+(1, 155, 'Quad', 7500, true),
+(1, 162, 'Triple',5000, true),
+(1, 177, 'Double', 1500, false),
+(NULL, 124, 'Murphy Room',2200, true);
 --####################################################################################################################--
 --## OrderDetails                                                                                                   ##--
 --####################################################################################################################--
-INSERT INTO hotel.orderdetails(id_order, id_apartment, order_details_arrival_time,
-                               order_details_departure_time, order_details_total_price,
-                               order_details_price, order_details_people_amount,
-                               order_details_status) VALUES
-(1,1,'2017-03-31 9:30:20', '2017-04-05 10:30:20',1000,1000,1,true),
-(2,2,'2018-08-23 11:17:05', '2018-08-29 12:17:05',1500,1500,2,true),
-(3,4,'2021-05-22 15:24:18', '2021-05-22 16:24:18',2000,2000,2,true),
-(4,6,'2021-09-30 01:31:49', '2021-09-30 02:31:49',2500,2500,3,true),
-(5,7,'2020-08-19 11:36:09', '2020-08-19 12:36:09',15000,15000,3,true),
-(6,14,'2019-07-20 03:45:29', '2019-07-20 04:45:29',5000,5000,1,true),
-(7,3,'2020-05-20 09:45:31', '2020-05-20 09:45:31',2500,2500,2,true);
+INSERT INTO hotel.orderdetails(id_order, id_client, id_apartment, order_details_arrival_time,
+                               order_details_departure_time,order_details_people_amount,
+                               order_details_is_running, order_details_prolong_count) VALUES
+(1,1,1,'2022-04-25 9:30:20', '2022-05-01 10:30:20',1,false,0),
+(2,2,2,'2022-03-23 11:17:05', '2022-03-29 12:17:05',1,false,0),
+(3,3,12,'2022-03-22 15:24:18', '2022-03-29 16:24:18',3,false,0),
+(3,4,12,'2022-03-22 15:24:18', '2022-03-29 16:24:18',3,false,0),
+(3,5,12,'2022-03-22 15:24:18', '2022-03-29 16:24:18',3,false,0),
+(4,9,14,'2022-03-20 03:45:29', '2022-04-22 04:45:29',1,false,0),
+(5,7,6,'2022-06-01 09:45:29', '2022-06-01 10:45:29',1,true,0),
+(6,6,7,'2022-06-01 09:45:29', '2022-06-01 10:45:29',1,true,0),
+(7,8,11,'2022-05-20 03:45:29', '2022-05-23 04:45:29',2,true,0),
+(7,10,11,'2022-05-20 03:45:29', '2022-05-23 04:45:29',2,true,0);
 --####################################################################################################################--
 --##BookOrder                                                                                                    ##--
 --####################################################################################################################--
-INSERT INTO hotel.bookorder(id_order, booked_order_is_booked,
+INSERT INTO hotel.bookorder(id_order, id_client, booked_order_is_booked,
                             booked_order_is_canceled, booked_order_status) VALUES
-(1, true, false, true),
-(2, true, false, false),
-(2, false, true, true),
-(3, true, false, true),
-(4, true, false, false),
-(4, false, true, true),
-(5, true, false, true),
-(6, true, false, true),
-(7, true, false, true);
+(1,1, true, false, false),
+(1,1, false, false, true),
+(2,2, true, false, false),
+(2,2, false, true, true),
+(3,3, true, false, false),
+(3,3, false, false, true),
+(4,9, true, false, false),
+(4,9, false, false, true),
+(5,7, true, false, true),
+(6,6, true, false, true),
+(7,8, true, false, true);
 --####################################################################################################################--
 --##PayForOrder                                                                                                    ##--
 --####################################################################################################################--
@@ -101,10 +108,11 @@ INSERT INTO hotel.payfororder(id_booked_order, pay_for_order_is_paid, pay_for_or
                               pay_for_order_paid_sum, pay_for_order_remaining_sum,
                               pay_for_order_payment_method, pay_for_order_payment_count) VALUES
 (1, true, true, 1000, 0, NULL, 1),
-(4, false, false, 0, 2000, 'cash', 1),
-(7, false, true, 1000, 14000, 'credit card', 1),
-(7, true, true, 14000, 0, 'cash', 2),
-(8, true, true, 5000, 0, 'cash', 1),
-(9, true, true, 2500, 0, NULL, 1);
-
+(3, false, false, 0, 1500, 'cash', 1),
+(5, true, true, 5000, 0, 'cash', 1),
+(7, false, true, 1200, 1000, 'credit card', 1),
+(7, true, true, 2200, 0, 'credit card', 2),
+(9, true, true, 9500, 0, 'credit card', 1),
+(10, true, true, 9000, 0, 'credit card', 1),
+(11, true, true, 7500, 0, NULL, 1);
 
