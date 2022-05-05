@@ -1,4 +1,5 @@
-CREATE SCHEMA hotel;
+CREATE SCHEMA IF NOT EXISTS hotel;
+--DROP SCHEMA IF EXISTS hotel CASCADE;
 
 CREATE TABLE IF NOT EXISTS hotel.Client
 (
@@ -27,15 +28,16 @@ CREATE TABLE IF NOT EXISTS hotel.Employee
 CREATE TABLE IF NOT EXISTS hotel.Apartment
 (
     ID_apartment BIGSERIAL PRIMARY KEY ,
-    apartment_room_amount INT,
+    apartment_capacity INT,
     apartment_number INT NOT NULL,
     apartment_class VARCHAR(50) NOT NULL,
+    apartment_price_for_night DECIMAL NOT NULL,
     apartment_is_available BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS hotel.Order
 (
-    ID_order BIGSERIAL PRIMARY KEY ,
+    ID_order BIGINT PRIMARY KEY ,
     ID_client INT NOT NULL REFERENCES hotel.Client,
     ID_employee INT NOT NULL REFERENCES hotel.Employee
 );
@@ -47,11 +49,10 @@ CREATE TABLE IF NOT EXISTS hotel.OrderDetails
     ID_apartment INT NOT NULL REFERENCES hotel.Apartment,
     order_details_arrival_time TIMESTAMP NOT NULL,
     order_details_departure_time TIMESTAMP NOT NULL,
-    order_details_total_price DECIMAL NOT NULL,
-    order_details_price DECIMAL NOT NULL,
     order_details_surcharge DECIMAL DEFAULT 0,
     order_details_people_amount INT NOT NULL,
-    order_details_status BOOLEAN NOT NULL
+    order_details_is_running BOOLEAN NOT NULL,
+    order_details_prolong_count INT DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS hotel.BookOrder
