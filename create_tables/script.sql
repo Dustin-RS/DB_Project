@@ -37,31 +37,36 @@ CREATE TABLE IF NOT EXISTS hotel.Apartment
 
 CREATE TABLE IF NOT EXISTS hotel.Order
 (
-    ID_order BIGINT PRIMARY KEY ,
+    ID_order BIGINT NOT NULL,
     ID_client INT NOT NULL REFERENCES hotel.Client,
-    ID_employee INT NOT NULL REFERENCES hotel.Employee
+    ID_employee INT NOT NULL REFERENCES hotel.Employee,
+    PRIMARY KEY (ID_order, ID_client)
 );
 
 CREATE TABLE IF NOT EXISTS hotel.OrderDetails
 (
     ID_order_details BIGSERIAL PRIMARY KEY ,
-    ID_order BIGINT NOT NULL REFERENCES hotel.Order,
+    ID_order BIGINT NOT NULL,
+    ID_client BIGINT NOT NULL,
     ID_apartment INT NOT NULL REFERENCES hotel.Apartment,
     order_details_arrival_time TIMESTAMP NOT NULL,
     order_details_departure_time TIMESTAMP NOT NULL,
     order_details_surcharge DECIMAL DEFAULT 0,
     order_details_people_amount INT NOT NULL,
     order_details_is_running BOOLEAN NOT NULL,
-    order_details_prolong_count INT DEFAULT 0
+    order_details_prolong_count INT DEFAULT 0,
+    FOREIGN KEY (ID_order, ID_client) REFERENCES hotel.Order(id_order, id_client)
 );
 
 CREATE TABLE IF NOT EXISTS hotel.BookOrder
 (
     ID_booked_order BIGSERIAL PRIMARY KEY ,
-    ID_order BIGINT NOT NULL REFERENCES hotel.Order,
+    ID_order BIGINT NOT NULL,
+    ID_client BIGINT NOT NULL,
     booked_order_is_booked BOOLEAN NOT NULL,
     booked_order_is_canceled BOOLEAN NOT NULL,
-    booked_order_status BOOLEAN NOT NULL
+    booked_order_status BOOLEAN NOT NULL,
+    FOREIGN KEY (ID_order, ID_client) REFERENCES hotel.Order(id_order, id_client)
 );
 
 CREATE TABLE IF NOT EXISTS hotel.PayForOrder
