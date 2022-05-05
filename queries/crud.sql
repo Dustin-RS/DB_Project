@@ -24,15 +24,15 @@ INSERT INTO hotel.employee(employee_firstname, employee_lastname, employee_mobil
  'vitae.aliquet.nec@protonmail.net', '4241574442356426', '1965-09-27');
 
 --1.3
-INSERT INTO hotel.order(id_client, id_employee) VALUES
-(12, 7),
-(13, 8);
+INSERT INTO hotel.order(id_order,id_client, id_employee) VALUES
+(8,12, 7),
+(9,13, 8);
 
-INSERT INTO hotel.orderdetails(id_order, id_apartment, order_details_arrival_time,
-                               order_details_departure_time, order_details_total_price, order_details_price, order_details_surcharge,
-                               order_details_people_amount, order_details_status) VALUES
-(8, 2, '2017-03-24 10:30:20', '2017-04-10 11:30:20', 8000, 8000, 0, 1, true),
-(9, 1, '2018-07-23 10:30:20', '2018-07-25 11:30:20', 1500, 1500, 0, 1, true);
+INSERT INTO hotel.orderdetails(id_order,id_client, id_apartment, order_details_arrival_time,
+                               order_details_departure_time, order_details_surcharge , order_details_people_amount,
+                               order_details_is_running, order_details_prolong_count) VALUES
+(8, 12,2, '2022-04-24 10:30:20', '2022-05-07 11:30:20', 0, 1, true, 0),
+(9, 13,1, '2022-05-23 10:30:20', '2022-05-29 11:30:20', 0, 1, true, 0);
 --INSERT end
 
 --UPDATE begin
@@ -40,58 +40,60 @@ INSERT INTO hotel.orderdetails(id_order, id_apartment, order_details_arrival_tim
 UPDATE hotel.apartment SET apartment_is_available = false WHERE id_apartment = 1;
 UPDATE hotel.apartment SET apartment_is_available = false WHERE id_apartment = 2;
 
---2.1
+--2.1(Аппартаменты снова готовы к сдаче)
 UPDATE hotel.apartment SET apartment_is_available = true WHERE ID_apartment = 3;
 
---2.2
+--2.2(Седьмой заказ полностью обслужен)
 UPDATE hotel.bookorder SET booked_order_status = false WHERE id_order = 7;
 
-INSERT INTO hotel.bookorder(id_order, booked_order_is_booked,
+INSERT INTO hotel.bookorder(id_order, id_client, booked_order_is_booked,
                             booked_order_is_canceled, booked_order_status) VALUES
-(7, false, false, true);
+(7,8, false, false, true);
 
 
---2.3
-UPDATE hotel.orderdetails SET order_details_status = false WHERE id_order = 9;
+--2.3(Заказ номер девять был продлен с доплатой)
+UPDATE hotel.orderdetails SET order_details_is_running = false WHERE id_order = 9;
 
-INSERT INTO hotel.orderdetails(id_order, id_apartment, order_details_arrival_time,
-                               order_details_departure_time, order_details_total_price, order_details_price, order_details_surcharge,
-                               order_details_people_amount, order_details_status) VALUES
-(9, 1, '2018-07-23 10:30:20', '2018-07-29 11:30:20', 2500, 1500, 1000, 1, true);
+INSERT INTO hotel.orderdetails(id_order,id_client, id_apartment, order_details_arrival_time,
+                               order_details_departure_time, order_details_surcharge , order_details_people_amount,
+                               order_details_is_running, order_details_prolong_count) VALUES
+(9,13, 1, '2022-05-23 10:30:20', '2022-06-03 11:30:20', 1000, 1, true, 1);
 
---2.4
-UPDATE hotel.bookorder SET booked_order_status = false WHERE id_order = 1;
+--2.4(Заказ номер 8 был отменен)
+UPDATE hotel.bookorder SET booked_order_status = false WHERE id_order = 8;
 
-INSERT INTO hotel.bookorder(id_order, booked_order_is_booked,
+INSERT INTO hotel.bookorder(id_order, id_client, booked_order_is_booked,
                             booked_order_is_canceled, booked_order_status) VALUES
-(1,false, true, true);
+(8,12 ,false, true, true);
 --UPDATE end
 
 --SELECT begin
 --Кто где живет
-SELECT c.client_firstname, c.client_lastname, ap.apartment_number, ap.apartment_class
+SELECT DISTINCT c.client_firstname, c.client_lastname, ap.apartment_number, ap.apartment_class
 FROM hotel.client AS c, hotel.order AS ord
 INNER JOIN hotel.orderdetails AS odet ON odet.id_order = ord.id_order
 INNER JOIN hotel.apartment AS ap ON ap.id_apartment = odet.id_apartment
-WHERE c.id_client = ord.id_client AND odet.order_details_status = true;
+WHERE c.id_client = ord.id_client AND odet.order_details_is_running = true;
 
 --Кто оплатил заказ
 SELECT c.client_firstname, c.client_lastname FROM hotel.client AS c, hotel.order AS ord
-INNER JOIN hotel.bookorder AS bord ON bord.id_order = ord.id_order
+INNER JOIN hotel.bookorder AS bord ON bord.id_order = ord.id_order AND bord.id_client = ord.id_client
 INNER JOIN hotel.payfororder AS pay ON pay.id_booked_order = bord.id_booked_order
 WHERE pay.pay_for_order_is_paid = true AND c.id_client = ord.id_client
-AND bord.booked_order_is_booked = true AND bord.booked_order_status = true;
+AND bord.booked_order_is_canceled = false AND bord.booked_order_status = true;
 --Кто отменил бронирование
-SELECT c.client_firstname, c.client_lastname FROM hotel.client AS c, hotel.order AS ord
-INNER JOIN hotel.bookorder AS bord ON bord.id_order = ord.id_order
-WHERE bord.booked_order_is_canceled = true AND c.id_client = ord.id_client;
+SELECT c.client_firstname, c.client_lastname, bord.booked_order_is_canceled FROM hotel.client AS c, hotel.order AS ord
+INNER JOIN hotel.bookorder AS bord ON bord.id_order = ord.id_order AND bord.id_client = ord.id_client
+WHERE bord.booked_order_is_canceled = true AND bord.booked_order_status = true AND c.id_client = ord.id_client;
+
 
 --На сколько дней остановились
 SELECT c.client_firstname, c.client_lastname,
        DATE_PART('day', odet.order_details_departure_time::timestamp - odet.order_details_arrival_time::timestamp)
 FROM hotel.client AS c, hotel.order AS ord
-INNER JOIN hotel.orderdetails AS odet ON odet.id_order = ord.id_client
-WHERE c.id_client = ord.id_client AND odet.order_details_status = true;
+INNER JOIN hotel.orderdetails AS odet ON odet.id_order = ord.id_order AND odet.id_client = ord.id_client
+INNER JOIN hotel.bookorder AS bord ON bord.id_order = ord.id_order AND bord.id_client = ord.id_client
+WHERE c.id_client = ord.id_client AND bord.booked_order_is_canceled = false AND bord.booked_order_status = true;
 --SELECT end
 
 --DELETE begin
